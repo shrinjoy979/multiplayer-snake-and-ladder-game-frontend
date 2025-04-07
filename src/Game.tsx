@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import "./css/Board.css";
 import { TowerControl as GameController, Users, Dice5, Trophy } from 'lucide-react';
+import { useUser } from '@clerk/clerk-react';
 
 const boardRowSize = 10;
 const cellSize = 50;
@@ -21,6 +22,7 @@ const getPosition = (num: number) => {
 };
 
 function Game() {
+  const { user } = useUser();
   const [gameId, setGameId] = useState<string | null>(null);
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [players, setPlayers] = useState<string[]>([]);
@@ -76,7 +78,7 @@ function Game() {
 
   const rollDice = () => {
     if (gameId && players[currentTurn] === playerId && !winner) {
-      socket.emit("rollDice", { gameId, player: playerId });
+      socket.emit("rollDice", { gameId, player: playerId, username: user?.fullName });
     }
   };
 
