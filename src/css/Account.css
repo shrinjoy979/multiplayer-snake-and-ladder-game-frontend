@@ -1,0 +1,93 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+body {
+  background: linear-gradient(180deg, #4c1d95 0%, #4338ca 100%);
+  color: white;
+  min-height: 100vh;
+}
+
+.betting-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+}
+
+.bet-amount-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.3s ease;
+  min-width: 90px;
+}
+
+.bet-amount-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.bet-amount-btn.active {
+  background: linear-gradient(90deg, #a855f7 0%, #6366f1 100%);
+  border: none;
+}
+
+.wallet-btn {
+  background: linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%);
+  border: none;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.wallet-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+  color: white;
+}
+
+.wallet-btn.connected {
+  background: #22c55e;
+}
+
+.place-bet-btn {
+  background: linear-gradient(90deg, #a855f7 0%, #6366f1 100%);
+  border: none;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.place-bet-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.9;
+  color: white;
+}
+
+.place-bet-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.result-box {
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.result-box.win {
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.result-box.lose {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
