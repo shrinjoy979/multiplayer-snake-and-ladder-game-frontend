@@ -8,6 +8,8 @@ import axios from "axios";
 function LandingPage() {
   const { isSignedIn, user } = useUser();
   const navigate = useNavigate();
+  const date = new Date();
+  const year = date.getFullYear();
   const serverURL = import.meta.env.VITE_ENVIRONMENT === 'LOCAL' ? import.meta.env.VITE_LOCAL_SERVER_URL : import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
@@ -135,7 +137,7 @@ function LandingPage() {
               <span className="text-white">SnakesWin</span>
             </div>
             <p className="text-white-50 mb-0 small">
-              © 2024 SnakesWin. All rights reserved.
+              © {year} SnakesWin. All rights reserved.
             </p>
           </div>
         </div>

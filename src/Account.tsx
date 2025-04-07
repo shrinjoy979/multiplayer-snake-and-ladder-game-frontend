@@ -5,6 +5,7 @@ import "./css/Account.css";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { toast } from "react-toastify";
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 function Account() {
@@ -33,6 +34,7 @@ function Account() {
 
     await wallet.sendTransaction(transaction, connection);
 
+    toast.success(amount + " SOL deposited successfully");
     navigate('/game');
   };
 
