@@ -53,6 +53,7 @@ function Game() {
 
     socket.on("gameOver", ({ winner }: { winner: string }) => {
       setWinner(winner);
+      // 
     });
 
     return () => {
@@ -206,10 +207,19 @@ function Game() {
               </div>
 
               {winner ? (
-                <div className="winner-announcement">
-                  <Trophy className="trophy-icon" size={32} />
-                  <span>Player {winner} Wins!</span>
-                </div>
+                <>
+                  {diceValue !== null && (
+                    <div className="dice-value">
+                      <span className="label">Dice Roll:</span>
+                      <span className="value">{diceValue}</span>
+                    </div>
+                  )}
+
+                  <div className="winner-announcement">
+                    <Trophy className="trophy-icon" size={32} />
+                    <span>Player {winner} Wins!</span>
+                  </div>
+                </>
               ) : (
                 <div className="game-controls">
                   <button
