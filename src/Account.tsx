@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { RefreshCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import "./css/Account.css";
-import { useWallet } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from "@solana/web3.js";
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import '@solana/wallet-adapter-react-ui/styles.css';
 
@@ -11,14 +12,27 @@ function Account() {
   const [isSpinning, setIsSpinning] = useState(false);
   const navigate = useNavigate();
   const wallet = useWallet();
+  const { connection } = useConnection();
 
   const betAmounts = [0.1, 0.25, 0.5, 1, 2, 3, 4, 5];
 
-  const handleBet = () => {
+  const handleBet = async () => {
     if (!amount || parseFloat(amount) <= 0) return;
     if (!wallet.publicKey) return;
     
     setIsSpinning(true);
+
+    const snakeWinAccountPublicAddress = import.meta.env.VITE_SOLANA_PUBLIC_ADDRESS;
+
+    const transaction = new Transaction();
+    transaction.add(SystemProgram.transfer({
+      fromPubkey: wallet.publicKey!,
+      toPubkey: new PublicKey(snakeWinAccountPublicAddress),
+      lamports: Number(amount) * LAMPORTS_PER_SOL,
+    }));
+
+    await wallet.sendTransaction(transaction, connection);
+
     navigate('/game');
   };
 
