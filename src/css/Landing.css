@@ -7,15 +7,15 @@ body {
 }
 
 .btn-yellow {
-  background-color: #fbbf24;
-  border-color: #fbbf24;
-  color: #4c1d95;
+  background-color: #fbbf24 !important;
+  border-color: #fbbf24 !important;
+  color: #4c1d95 !important;
 }
 
 .btn-yellow:hover {
-  background-color: #f59e0b;
-  border-color: #f59e0b;
-  color: #4c1d95;
+  background-color: #f59e0b !important;
+  border-color: #f59e0b !important;
+  color: #4c1d95 !important;
 }
 
 .feature-card {
