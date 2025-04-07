@@ -45,7 +45,6 @@ function LandingPage() {
                 <SignOutButton>
                   <button className="btn text-white">Sign out</button>
                 </SignOutButton>
-
                 <button className="btn btn-yellow" onClick={() => navigate('/account')}>Play Now</button>
               </>
             ) : (
