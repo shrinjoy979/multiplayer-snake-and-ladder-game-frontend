@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { RefreshCcw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import "./css/Account.css";
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
@@ -8,6 +9,7 @@ import '@solana/wallet-adapter-react-ui/styles.css';
 function Account() {
   const [amount, setAmount] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
+  const navigate = useNavigate();
   const wallet = useWallet();
 
   const betAmounts = [0.1, 0.25, 0.5, 1, 2, 3, 4, 5];
@@ -17,6 +19,7 @@ function Account() {
     if (!wallet.publicKey) return;
     
     setIsSpinning(true);
+    navigate('/game');
   };
 
   return (
@@ -58,7 +61,8 @@ function Account() {
         </div>
 
         <p className="text-white-50 small text-center mt-4 mb-0">
-          Place your bet and double your money if you win!
+          Place your bet and double your money if you win! <br />
+          <b>3%</b> fees apply for every game.
         </p>
       </div>
     </div>
