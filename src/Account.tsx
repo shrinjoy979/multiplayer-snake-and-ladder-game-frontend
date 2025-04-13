@@ -24,7 +24,6 @@ function Account() {
     setIsSpinning(true);
 
     const snakeWinAccountPublicAddress = import.meta.env.VITE_SOLANA_PUBLIC_ADDRESS;
-    console.log('snakeWinAccountPublicAddress', snakeWinAccountPublicAddress);
 
     const transaction = new Transaction();
     transaction.add(SystemProgram.transfer({

@@ -19,7 +19,6 @@ function LandingPage() {
           id: user?.id,
           name: user?.fullName,
           email: user?.primaryEmailAddress?.emailAddress,
-          profileImage: 'testing',
         })
         .then((response: any) => {
           console.log("User saved successfully:", response.data);
