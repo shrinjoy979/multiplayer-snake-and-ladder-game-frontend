@@ -3,6 +3,7 @@ import LandingPage from './Landing';
 import './App.css';
 import Game from "./Game";
 import Account from "./Account";
+import CreateOrJoinGame from "./CreateOrJoinGame";
 import { ToastContainer } from 'react-toastify';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
@@ -16,8 +17,9 @@ function App() {
           <WalletModalProvider>
             <Routes>
               <Route path="/" element={<LandingPage />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/create-or-join-game" element={<CreateOrJoinGame />} />
+              <Route path="/account/:gameId/:playerId/:type" element={<Account />} />
+              <Route path="/game/:gameId/:playerId/:type" element={<Game />} />
             </Routes>
           </WalletModalProvider>
         </WalletProvider>

@@ -44,7 +44,7 @@ function LandingPage() {
                 <SignOutButton>
                   <button className="btn text-white">Sign out</button>
                 </SignOutButton>
-                <button className="btn btn-yellow" onClick={() => navigate('/account')}>Play Now</button>
+                <button className="btn btn-yellow" onClick={() => navigate('/create-or-join-game')}>Play Now</button>
               </>
             ) : (
               <>
@@ -71,7 +71,7 @@ function LandingPage() {
             </p>
             <div className="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
               {isSignedIn ?
-                <button className="btn btn-yellow btn-lg d-flex align-items-center justify-content-center gap-2" onClick={() => navigate('/account')}>
+                <button className="btn btn-yellow btn-lg d-flex align-items-center justify-content-center gap-2" onClick={() => navigate('/create-or-join-game')}>
                   Start Playing <ArrowRight size={20} />
                 </button>
               :
