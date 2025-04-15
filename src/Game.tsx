@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
-import "./css/Board.css";
-import { TowerControl as GameController, Users, Dice5, Trophy } from 'lucide-react';
+import { Dice5, Trophy } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
+import { useParams } from 'react-router-dom';
+import { socket } from './socket';
+import "./css/Board.css";
 
 const boardRowSize = 10;
 const cellSize = 50;
-const serverURL = import.meta.env.VITE_ENVIRONMENT === 'LOCAL' ? import.meta.env.VITE_LOCAL_SERVER_URL : import.meta.env.VITE_SERVER_URL;
-const socket = io(serverURL);
 
 const snakes: { [key: number]: number } = { 98: 78, 95: 56, 93: 73, 87: 36, 64: 60, 49: 11, 26: 10 };
 const ladders: { [key: number]: number } = { 2: 38, 7: 14, 8: 31, 21: 42, 28: 84, 51: 67, 71: 91 };
@@ -23,20 +22,14 @@ const getPosition = (num: number) => {
 
 function Game() {
   const { user } = useUser();
-  const [gameId, setGameId] = useState<string | null>(null);
-  const [playerId, setPlayerId] = useState<string | null>(null);
   const [players, setPlayers] = useState<string[]>([]);
   const [playerPosition, setPlayerPosition] = useState<{ [key: string]: number }>({});
   const [diceValue, setDiceValue] = useState<number | null>(null);
   const [currentTurn, setCurrentTurn] = useState<number>(0);
   const [winner, setWinner] = useState<string | null>(null);
+  const { gameId, playerId, type } = useParams();
 
   useEffect(() => {
-    socket.on("gameCreated", ({ gameId }: { gameId: string }) => {
-      setGameId(gameId);
-      setPlayerId(socket.id!);
-    });
-
     socket.on("startGame", ({ players }: { players: string[] }) => {
       setPlayers(players);
       setPlayerPosition({
@@ -64,18 +57,12 @@ function Game() {
     };
   }, []);
 
-  const handleCreateGame = () => {
-    socket.emit("createGame");
-  };
-
-  const handleJoinGame = () => {
-    const code = prompt("Enter the game code");
-    if (code) {
-      socket.emit("joinGame", code);
-      setGameId(code);
-      setPlayerId(socket.id!);
+  useEffect(() => {
+    if(players.length === 0 && type === 'join') {
+      socket.emit("playerReady", gameId);
     }
-  };
+  }, [gameId])
+  
 
   const rollDice = () => {
     if (gameId && players[currentTurn] === playerId && !winner) {
@@ -119,47 +106,7 @@ function Game() {
 
   return (
     <>
-      {!gameId ? (
-        <div className="container min-vh-100 d-flex align-items-center justify-content-center py-4">
-          <div className="glass-card rounded-4 p-5 shadow-lg" style={{ maxWidth: '450px' }}>
-            <h1 className="display-6 fw-bold text-center text-white mb-4">
-              SnakesWin
-            </h1>
-
-            <div className="d-flex flex-column gap-4">
-              <button
-                onClick={handleCreateGame}
-                className="btn btn-custom-purple btn-lg w-100 d-flex align-items-center justify-content-center gap-2 text-light"
-              >
-                <span className="icon-container">
-                  <GameController size={24} />
-                </span>
-                <span>Create Game</span>
-              </button>
-
-              <div className="d-flex align-items-center gap-3">
-                <hr className="flex-grow-1 opacity-25" />
-                <span className="text-white-50">OR</span>
-                <hr className="flex-grow-1 opacity-25" />
-              </div>
-
-              <button
-                onClick={handleJoinGame}
-                className="btn btn-custom-indigo btn-lg w-100 d-flex align-items-center justify-content-center gap-2 text-light"
-              >
-                <span className="icon-container">
-                  <Users size={24} />
-                </span>
-                <span>Join Game</span>
-              </button>
-            </div>
-
-            <p className="text-white-50 text-center small mt-4 mb-0">
-              Connect with friends and start playing!
-            </p>
-          </div>
-        </div>
-      ) : (
+      {gameId &&
         <div className="game-container">
           <div className="game-board-wrapper">
             <div style={{ position: 'relative', width: boardRowSize * cellSize, height: boardRowSize * cellSize }}>
@@ -242,7 +189,7 @@ function Game() {
             </div>
           </div>
         </div>
-      )}
+      }
     </>
   );
 }
