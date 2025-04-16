@@ -41,7 +41,8 @@ function Account() {
 
     toast.success(amount + " SOL deposited successfully");
 
-    axios
+    if(type === 'create') {
+      axios
       .post(`${serverURL}/api/save-game-details`, {
         creator_id: user?.id,
         bet_amount: Number(amount) * LAMPORTS_PER_SOL,
@@ -50,11 +51,12 @@ function Account() {
       })
       .then((response: any) => {
         console.log("Game data saved successfully:", response.data);
-        navigate(`/game/${gameId}/${playerId}/${type}`);
       })
       .catch((error: any) => {
         console.error("Error saving game data:", error.response?.data || error.message);
       });
+    }
+    navigate(`/game/${gameId}/${playerId}/${type}`);
   };
 
   useEffect(() => {

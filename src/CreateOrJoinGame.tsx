@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { socket } from './socket';
+import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
 import { TowerControl as GameController, Users } from 'lucide-react';
 
 function CreateOrJoinGame() {
+    const { user } = useUser();
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -21,7 +23,7 @@ function CreateOrJoinGame() {
       const code = prompt("Enter the game code");
       if (code) {
         setLoading(true);
-        socket.emit("joinGame", code);
+        socket.emit("joinGame", code, user?.id);
         setLoading(false);
         navigate(`/account/${code}/${socket.id}/join`);
       }
