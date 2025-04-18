@@ -7,7 +7,7 @@ import axios from "axios";
 import "./css/Board.css";
 import { useConnection } from '@solana/wallet-adapter-react';
 
-import { Keypair, PublicKey, LAMPORTS_PER_SOL, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
+import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 
 
