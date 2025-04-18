@@ -47,6 +47,7 @@ function Account() {
         creator_id: user?.id,
         bet_amount: Number(amount) * LAMPORTS_PER_SOL,
         game_code: gameId,
+        player_one_public_key: wallet.publicKey.toBase58(),
         status: "waiting"
       })
       .then((response: any) => {
@@ -55,13 +56,26 @@ function Account() {
       .catch((error: any) => {
         console.error("Error saving game data:", error.response?.data || error.message);
       });
+
+    }else {
+
+      axios
+      .post(`${serverURL}/api/update-player-two-public-key`, {
+        game_code: gameId,
+        player_two_public_key: wallet.publicKey.toBase58(),
+      })
+      .then((response: any) => {
+        console.log("Game data saved successfully:", response.data);
+      }).catch((error: any) => {
+        console.error("Error saving game data:", error.response?.data || error.message);
+      });
+
     }
     navigate(`/game/${gameId}/${playerId}/${type}`);
   };
 
   useEffect(() => {
     if(type === 'join') {
-
       const fetchBetAmout = async () => {
         try {
           const response = await axios.get(`${serverURL}/api/get-bet-amount`, {

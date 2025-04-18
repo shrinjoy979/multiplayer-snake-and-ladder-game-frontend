@@ -3,7 +3,13 @@ import { Dice5, Trophy } from 'lucide-react';
 import { useUser } from '@clerk/clerk-react';
 import { useParams } from 'react-router-dom';
 import { socket } from './socket';
+import axios from "axios";
 import "./css/Board.css";
+import { useConnection } from '@solana/wallet-adapter-react';
+
+import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
+import bs58 from 'bs58';
+
 
 const boardRowSize = 10;
 const cellSize = 50;
@@ -29,6 +35,8 @@ function Game() {
   const [winner, setWinner] = useState<string | null>(null);
   const { gameId, playerId, type } = useParams();
 
+  const { connection } = useConnection();
+
   useEffect(() => {
     socket.on("startGame", ({ players }: { players: string[] }) => {
       setPlayers(players);
@@ -44,9 +52,19 @@ function Game() {
       setCurrentTurn(currentTurn);
     });
 
-    socket.on("gameOver", ({ winner }: { winner: string }) => {
+    socket.on("gameOver", async ({ winner, userId }: { winner: string, userId: string }) => {
       setWinner(winner);
-      // 
+
+      await axios.get(`/api/get-winner-details`, { 
+        params: { 
+          gameId: gameId,
+          userId: userId
+        } 
+      }).then((response) => {
+        sendSolToWinner(response.data.winner_public_key, response.data.wining_amount);
+      }).catch((error) => {
+        console.log('error in getting winner details', error);
+      })
     });
 
     return () => {
@@ -66,7 +84,7 @@ function Game() {
 
   const rollDice = () => {
     if (gameId && players[currentTurn] === playerId && !winner) {
-      socket.emit("rollDice", { gameId, player: playerId, username: user?.fullName });
+      socket.emit("rollDice", { gameId, player: playerId, username: user?.fullName, userId: user?.id });
     }
   };
 
@@ -103,6 +121,29 @@ function Game() {
     }
     return boardCells;
   };
+
+  async function sendSolToWinner(winner_public_key: string, amount: any) {
+    const organizationBase58PrivateKey = import.meta.env.VITE_BASE58_PRIVATE_KEY;
+    const senderKeypair = Keypair.fromSecretKey(bs58.decode(organizationBase58PrivateKey));
+  
+    const winnerPublicKey = new PublicKey(winner_public_key);
+
+    const transaction = new Transaction().add(
+      SystemProgram.transfer({
+        fromPubkey: senderKeypair.publicKey,
+        toPubkey: winnerPublicKey,
+        lamports: amount,
+      })
+    );
+  
+    try {
+      const signature = await sendAndConfirmTransaction(connection, transaction, [senderKeypair]);
+      console.log('✅ Transaction successful!');
+      console.log('🔗 Explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+    } catch (error) {
+      console.error('❌ Failed to send SOL:', error);
+    }
+  }
 
   return (
     <>
