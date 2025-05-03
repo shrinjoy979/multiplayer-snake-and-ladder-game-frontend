@@ -61,7 +61,7 @@ function LandingPage() {
         </nav>
 
         <div className="row align-items-center gy-4">
-          <div className="col-md-6 text-center text-md-start">
+          <div className="col-md-6 text-center text-md-start" style={{ animation: 'float 2s ease-in-out infinite' }}>
             <h1 className="display-4 fw-bold text-white mb-4">
               Play Snakes & Ladders
               <span className="d-block text-yellow">Win SOLANA!</span>
@@ -87,6 +87,7 @@ function LandingPage() {
               src="https://images.unsplash.com/photo-1611996575749-79a3a250f948?auto=format&fit=crop&q=80&w=600"
               alt="Dice Game"
               className="img-fluid rounded-4 shadow"
+              style={{ minHeight: '400px' }}
             />
           </div>
         </div>
