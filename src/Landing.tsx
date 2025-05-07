@@ -4,6 +4,7 @@ import "./css/Landing.css";
 import { Dice5, Coins, Users, Shield, ArrowRight } from 'lucide-react';
 import { SignInButton, SignOutButton, useUser } from '@clerk/clerk-react';
 import axios from "axios";
+import RecentResult from './RecentResult';
 
 function LandingPage() {
   const { isSignedIn, user } = useUser();
@@ -92,6 +93,8 @@ function LandingPage() {
           </div>
         </div>
       </header>
+
+      <RecentResult />
 
       <section className="py-5 bg-purple-dark" id="learnMore">
         <div className="container">

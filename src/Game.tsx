@@ -5,11 +5,10 @@ import { useParams } from 'react-router-dom';
 import { socket } from './socket';
 import axios from "axios";
 import "./css/Board.css";
-import { useConnection } from '@solana/wallet-adapter-react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
 import bs58 from 'bs58';
-
 
 const boardRowSize = 10;
 const cellSize = 50;
@@ -36,6 +35,8 @@ function Game() {
   const { gameId, playerId, type } = useParams();
 
   const { connection } = useConnection();
+  const wallet = useWallet();
+  const serverURL = import.meta.env.VITE_ENVIRONMENT === 'LOCAL' ? import.meta.env.VITE_LOCAL_SERVER_URL : import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
     socket.on("startGame", ({ players }: { players: string[] }) => {
@@ -55,16 +56,25 @@ function Game() {
     socket.on("gameOver", async ({ winner, userId }: { winner: string, userId: string }) => {
       setWinner(winner);
 
-      await axios.get(`/api/get-winner-details`, { 
-        params: { 
+      await axios.get(`${serverURL}/api/get-winner-details`, {
+        params: {
           gameId: gameId,
           userId: userId
-        } 
+        }
       }).then((response) => {
-        sendSolToWinner(response.data.winner_public_key, response.data.wining_amount);
+
+        console.log('userId === user?.id', userId, user?.id);
+        if(userId === user?.id) {
+          console.log('Inside if');
+          sendSolToWinner(response.data.winner_public_key, response.data.wining_amount, userId);
+        } else {
+          console.log('Inside else');
+          updateDataForLossUser(userId, response.data.bet_amount);
+        }
+
       }).catch((error) => {
         console.log('error in getting winner details', error);
-      })
+      });
     });
 
     return () => {
@@ -81,9 +91,9 @@ function Game() {
     }
   }, [gameId])
   
-
   const rollDice = () => {
     if (gameId && players[currentTurn] === playerId && !winner) {
+      console.log("rollDice", playerId, wallet.publicKey, wallet.publicKey!.toBase58());
       socket.emit("rollDice", { gameId, player: playerId, username: user?.fullName, userId: user?.id });
     }
   };
@@ -122,7 +132,8 @@ function Game() {
     return boardCells;
   };
 
-  async function sendSolToWinner(winner_public_key: string, amount: any) {
+  async function sendSolToWinner(winner_public_key: string, amount: any, userId: string) {
+    console.log('sendSolToWinner', winner_public_key, amount, userId);
     const organizationBase58PrivateKey = import.meta.env.VITE_BASE58_PRIVATE_KEY;
     const senderKeypair = Keypair.fromSecretKey(bs58.decode(organizationBase58PrivateKey));
   
@@ -138,11 +149,40 @@ function Game() {
   
     try {
       const signature = await sendAndConfirmTransaction(connection, transaction, [senderKeypair]);
-      console.log('✅ Transaction successful!');
-      console.log('🔗 Explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+
+      if(signature) {
+        console.log('Transaction successful. Explorer:', `https://explorer.solana.com/tx/${signature}?cluster=devnet`);
+
+        await axios.post(`${serverURL}/api/save-payment-details`, {
+          userId,
+          winner_public_key,
+          amount,
+          status: "Win",
+          payment_signature: signature,
+          game_code: gameId
+        }).then((response) => {
+          console.log('Payment details saved successfully', response);
+        }).catch((error) => {
+          console.log('error in getting winner details', error);
+        });
+      }
     } catch (error) {
-      console.error('❌ Failed to send SOL:', error);
+      console.error('Failed to send SOL:', error);
     }
+  }
+
+  async function updateDataForLossUser(userId: string, amount: any) {
+    console.log('updateDataForLossUser', amount, userId);
+    await axios.post(`${serverURL}/api/save-payment-details`, {
+      userId,
+      amount,
+      status: "Loss",
+      game_code: gameId
+    }).then((response) => {
+      console.log('Payment details saved successfully', response);
+    }).catch((error) => {
+      console.log('error in saving payment details', error);
+    });
   }
 
   return (
