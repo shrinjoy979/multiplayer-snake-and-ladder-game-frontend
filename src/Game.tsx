@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { socket } from './socket';
 import axios from "axios";
 import "./css/Board.css";
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
 import bs58 from 'bs58';
@@ -35,7 +35,6 @@ function Game() {
   const { gameId, playerId, type } = useParams();
 
   const { connection } = useConnection();
-  const wallet = useWallet();
   const serverURL = import.meta.env.VITE_ENVIRONMENT === 'LOCAL' ? import.meta.env.VITE_LOCAL_SERVER_URL : import.meta.env.VITE_SERVER_URL;
 
   useEffect(() => {
