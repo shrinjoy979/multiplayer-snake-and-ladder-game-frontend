@@ -63,12 +63,9 @@ function Game() {
         }
       }).then((response) => {
 
-        console.log('userId === user?.id', userId, user?.id);
         if(userId === user?.id) {
-          console.log('Inside if');
           sendSolToWinner(response.data.winner_public_key, response.data.wining_amount, userId);
         } else {
-          console.log('Inside else');
           updateDataForLossUser(userId, response.data.bet_amount);
         }
 
@@ -89,11 +86,10 @@ function Game() {
     if(players.length === 0 && type === 'join') {
       socket.emit("playerReady", gameId);
     }
-  }, [gameId])
+  }, [gameId]);
   
   const rollDice = () => {
     if (gameId && players[currentTurn] === playerId && !winner) {
-      console.log("rollDice", playerId, wallet.publicKey, wallet.publicKey!.toBase58());
       socket.emit("rollDice", { gameId, player: playerId, username: user?.fullName, userId: user?.id });
     }
   };
@@ -133,7 +129,6 @@ function Game() {
   };
 
   async function sendSolToWinner(winner_public_key: string, amount: any, userId: string) {
-    console.log('sendSolToWinner', winner_public_key, amount, userId);
     const organizationBase58PrivateKey = import.meta.env.VITE_BASE58_PRIVATE_KEY;
     const senderKeypair = Keypair.fromSecretKey(bs58.decode(organizationBase58PrivateKey));
   
@@ -172,7 +167,6 @@ function Game() {
   }
 
   async function updateDataForLossUser(userId: string, amount: any) {
-    console.log('updateDataForLossUser', amount, userId);
     await axios.post(`${serverURL}/api/save-payment-details`, {
       userId,
       amount,
