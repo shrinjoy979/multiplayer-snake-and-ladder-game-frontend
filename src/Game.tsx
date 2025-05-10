@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { socket } from './socket';
 import axios from "axios";
 import "./css/Board.css";
+import { useNavigate } from 'react-router-dom';
 import { useConnection } from '@solana/wallet-adapter-react';
 
 import { Keypair, PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
@@ -27,6 +28,7 @@ const getPosition = (num: number) => {
 
 function Game() {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [players, setPlayers] = useState<string[]>([]);
   const [playerPosition, setPlayerPosition] = useState<{ [key: string]: number }>({});
   const [diceValue, setDiceValue] = useState<number | null>(null);
@@ -65,7 +67,7 @@ function Game() {
         if(userId === user?.id) {
           sendSolToWinner(response.data.winner_public_key, response.data.wining_amount, userId);
         } else {
-          updateDataForLossUser(userId, response.data.bet_amount);
+          updateDataForLossUser(user!.id, response.data.bet_amount);
         }
 
       }).catch((error) => {
@@ -240,6 +242,10 @@ function Game() {
                     <Trophy className="trophy-icon" size={32} />
                     <span>Player {winner} Wins!</span>
                   </div>
+
+                  <button className="btn btn-yellow btn-lg d-flex align-items-center justify-content-center gap-2 mt-2 w-100" onClick={() => navigate('/create-or-join-game')}>
+                    Start Playing
+                  </button>
                 </>
               ) : (
                 <div className="game-controls">
