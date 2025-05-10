@@ -54,8 +54,11 @@ function Game() {
       setCurrentTurn(currentTurn);
     });
 
-    socket.on("gameOver", async ({ winner, userId }: { winner: string, userId: string }) => {
+    socket.on("gameOver", async ({ winner, userId, diceRoll, positions, currentTurn }: { winner: string, userId: string, diceRoll: number, positions: { [key: string]: number }, currentTurn: number }) => {
       setWinner(winner);
+      setDiceValue(diceRoll);
+      setPlayerPosition(positions);
+      setCurrentTurn(currentTurn);
 
       await axios.get(`${serverURL}/api/get-winner-details`, {
         params: {
