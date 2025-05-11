@@ -31,27 +31,31 @@ function RecentResult() {
   }, []);
 
   return (
-    <div className="recent-flips bg-purple-dark py-4">
-      <div className="container">
-        <h4 className="text-white mb-4">Recent Result</h4>
-        <div className="flip-list">
-          {results.map((data, index) => (
-            <div key={index} className="flip-entry">
-              <span className="flip-user text-blue">{data.user_id.substring(0, 15) + "....."}</span>
-              <span className="flip-action">
-                <span className={data.status === 'Win' ? 'text-green' : 'text-red'}>
-                  {data.status} {'  '}
-                </span>
-                <span className="text-gold">{Number(data.amount) / LAMPORTS_PER_SOL} SOL</span>
-              </span>
-              <span className="flip-time text-white-50">
-                {new Date(data.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-              </span>
+    <>
+      {results.length > 0 ? 
+        <div className="recent-flips bg-purple-dark py-4">
+          <div className="container">
+            <h4 className="text-white mb-4">Recent Result</h4>
+            <div className="flip-list">
+              {results.map((data, index) => (
+                <div key={index} className="flip-entry">
+                  <span className="flip-user text-blue">{data.user_id.substring(0, 15) + "....."}</span>
+                  <span className="flip-action">
+                    <span className={data.status === 'Win' ? 'text-green' : 'text-red'}>
+                      {data.status} {'  '}
+                    </span>
+                    <span className="text-gold">{Number(data.amount) / LAMPORTS_PER_SOL} SOL</span>
+                  </span>
+                  <span className="flip-time text-white-50">
+                    {new Date(data.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
-      </div>
-    </div>
+      : null}
+    </>
   );
 }
 
