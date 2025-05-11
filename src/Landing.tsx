@@ -1,7 +1,7 @@
 import { useEffect, ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./css/Landing.css";
-import { Dice5, Coins, Users, Shield, ArrowRight } from 'lucide-react';
+import { Dice5, Coins, Users, Shield, ArrowRight, Linkedin, TwitterIcon } from 'lucide-react';
 import { SignInButton, SignOutButton, useUser } from '@clerk/clerk-react';
 import axios from "axios";
 import RecentResult from './RecentResult';
@@ -133,17 +133,29 @@ function LandingPage() {
 
       <footer className="py-4 footer">
         <div className="container">
-          <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div className="d-flex align-items-center gap-2">
               <Dice5 className="text-yellow" size={24} />
               <span className="text-white">SnakesWin</span>
             </div>
+
             <p className="text-white-50 mb-0 small">
-              © {year} SnakesWin. All rights reserved.
+              &copy; {year} SnakesWin. All rights reserved.
             </p>
+
+            <div className="d-flex align-items-center gap-3">
+              <a href="https://x.com/ShrinjoyS" target="_blank" rel="noopener noreferrer">
+                <TwitterIcon className="text-white-50 hover:text-white" size={20} />
+              </a>
+              <a href="https://www.linkedin.com/in/shrinjoy-saha/" target="_blank" rel="noopener noreferrer">
+                <Linkedin className="text-white-50 hover:text-white" size={20} />
+              </a>
+            </div>
           </div>
         </div>
       </footer>
+
+
     </div>
   );
 }

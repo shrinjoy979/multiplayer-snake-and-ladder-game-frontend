@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { socket } from './socket';
 import axios from "axios";
 import "./css/Board.css";
+import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 import { useConnection } from '@solana/wallet-adapter-react';
 
@@ -160,6 +161,7 @@ function Game() {
           payment_signature: signature,
           game_code: gameId
         }).then((response) => {
+          toast.success("Congratulations! You've won double your bet. The amount has been transferred to your wallet.");
           console.log('Payment details saved successfully', response);
         }).catch((error) => {
           console.log('error in getting winner details', error);
