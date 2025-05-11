@@ -2,12 +2,13 @@ import { useState } from "react";
 import { socket } from './socket';
 import { useUser } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
-import { TowerControl as GameController, Users } from 'lucide-react';
+import { TowerControl as GameController, Users, CheckCircle2 } from 'lucide-react';
 
 function CreateOrJoinGame() {
     const { user } = useUser();
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
+    const [network, setNetwork] = useState<'mainnet' | 'devnet'>('devnet');
 
     const handleCreateGame = () => {
       setLoading(true);
@@ -39,6 +40,34 @@ function CreateOrJoinGame() {
           ) :
           <div className="container min-vh-100 d-flex align-items-center justify-content-center py-4">
             <div className="glass-card rounded-4 p-5 shadow-lg" style={{ maxWidth: '450px' }}>
+
+              <div className="d-flex justify-content-center mb-4 gap-2">
+                {/* <button
+                  onClick={() => {
+                    setNetwork('mainnet');
+                  }}
+                  className={`btn btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 ${
+                    network === 'mainnet' ? 'bg-success text-dark fw-semibold' : 'btn-outline-secondary text-white'
+                  }`}
+                  disabled
+                >
+                  <CheckCircle2 size={16} />
+                  Mainnet
+                </button> */}
+
+                <button
+                  onClick={() => {
+                    setNetwork('devnet');
+                  }}
+                  className={`btn btn-sm px-4 py-2 rounded-pill d-flex align-items-center gap-2 ${
+                    network === 'devnet' ? 'bg-success text-dark fw-semibold' : 'btn-outline-secondary text-white'
+                  }`}
+                >
+                  <CheckCircle2 size={16} />
+                  Devnet
+                </button>
+              </div>
+
               <h1 className="display-6 fw-bold text-center text-white mb-4">
                 SnakesWin
               </h1>
