@@ -33,7 +33,7 @@ function RecentResult() {
   return (
     <>
       {results.length > 0 ? 
-        <div className="recent-flips bg-purple-dark py-4">
+        <div className="recent-flips bg-purple-dark py-4" id="learnMore">
           <div className="container">
             <h4 className="text-white mb-4">Recent Result</h4>
             <div className="flip-list">
